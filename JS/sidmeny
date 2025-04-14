@@ -1,0 +1,49 @@
+document.addEventListener("DOMContentLoaded", function () {
+  const navToggler = document.querySelector(".nav-toggler");
+  const navMenu = document.querySelector(".header__nav");
+  const submenuToggle = document.querySelector(".submenu-toggle");
+  const submenu = document.querySelector(".submenu");
+  const menuLinks = document.querySelectorAll(".header__nav a");
+
+  // TOGGLA HUVUDMENY (BURGERMENY)
+  navToggler?.addEventListener("click", function (event) {
+    navToggler.classList.toggle("active");
+    navMenu.classList.toggle("active");
+    event.stopPropagation(); // STOPPAR ATT DEN STÄNGS DIREKT VID KLICK
+  });
+
+  // TOGGLA UNDERMENY "BEHANDLINGAR"
+  submenuToggle?.addEventListener("click", function (e) {
+    e.preventDefault(); // FÖRHINDRA STANDARDKNAPPBETEENDE
+
+    const isExpanded = submenuToggle.getAttribute("aria-expanded") === "true";
+    submenuToggle.setAttribute("aria-expanded", !isExpanded);
+    submenu.classList.toggle("open");
+    e.stopPropagation(); // STOPPA BUBBLING SÅ ATT DET INTE STÄNGS DIREKT
+  });
+
+  // KLICK UTANFÖR MENY STÄNGER ALLT
+  document.addEventListener("click", function (event) {
+    const isClickInsideMenu = navMenu.contains(event.target);
+    const isClickOnToggle = navToggler.contains(event.target);
+
+    if (!isClickInsideMenu && !isClickOnToggle) {
+      navMenu.classList.remove("active");
+      navToggler.classList.remove("active");
+
+      // STÄNG UNDERMENY
+      submenu.classList.remove("open");
+      submenuToggle.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  // KLICK PÅ EN LÄNK STÄNGER MENY OCH UNDERMENY
+  menuLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      navMenu.classList.remove("active");
+      navToggler.classList.remove("active");
+      submenu.classList.remove("open");
+      submenuToggle.setAttribute("aria-expanded", "false");
+    });
+  });
+});
